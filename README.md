@@ -1,5 +1,5 @@
 # NCTest
-This is my small testing framework/library for my C/C++ projects.
+This is my small testing framework/library for my C projects.
 
 ## Usage
 You should write your tests in your test files in a format as given below:
@@ -33,3 +33,6 @@ TEST(shouldPassWithTwoAsserts, "This test has 2 asserts and all of them should p
 The below listed actions will lead to **compile time error or undefined behavior**:
 - Using `TEST` macro inside a function
 - Using `ASSERT_*` macros outside of a `TEST` macro function body
+
+## TODO
+- Add support for C++
