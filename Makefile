@@ -8,12 +8,13 @@ INCLUDES 	:= -Iinclude
 SRCDIR 		:= src
 TESTDIR		:= test
 BUILDDIR 	:= build
+BINDIR		:= bin
 
 SRC := $(wildcard $(SRCDIR)/*.c)
 TEST_SRC := $(wildcard $(TESTDIR)/*.c)
 OBJ := $(SRC:$(SRCDIR)/%.c=$(BUILDDIR)/%.o) $(TEST_SRC:$(TESTDIR)/%.c=$(BUILDDIR)/%.o)
 
-TARGET=$(BUILDDIR)/nctest
+TARGET=$(BINDIR)/nctest
 
 #########################################################################################################
 ################################################ RECIPES ################################################
@@ -25,7 +26,7 @@ run-example-user-tests: CFLAGS += $(RELEASE_FLAGS)
 run-example-user-tests: $(TARGET)
 
 clean:
-	rm -rf $(BUILDDIR)
+	rm -rf $(BUILDDIR) $(BINDIR)
 
 .PHONY: all run-example-user-tests clean
 
@@ -33,7 +34,7 @@ clean:
 ################################################# RULES #################################################
 #########################################################################################################
 
-$(TARGET): $(OBJ)
+$(TARGET): $(OBJ) | $(BINDIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
@@ -42,8 +43,8 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
 $(BUILDDIR)/%.o: $(TESTDIR)/%.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(BUILDDIR):
-	mkdir -p $(BUILDDIR)
+$(BUILDDIR) $(BINDIR):
+	mkdir -p $@
 
 # Build the static library (without main)
 # libnctest.a: nctest.o
