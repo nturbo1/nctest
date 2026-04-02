@@ -46,6 +46,6 @@ extern NT_TestState _nctest_curr_test_state;
         }                                                       \
     } while(0)
 
-void nctest_run_all();
+void nctest_run_all(bool verbose);
 
 #endif

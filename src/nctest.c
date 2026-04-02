@@ -14,13 +14,33 @@ NT_TestState _nctest_curr_test_state = {
     .failed = false // will be set to false by asserts in case they fail
 };
 
-static struct {
-    size_t passed_count;
-    size_t failed_count;
-} g_test_stat = {0, 0};
+#define PRINT_TEST_STAT(passed_count, failed_count)                                                      \
+    do {                                                                                                 \
+        printf("\n---------------------------------------------------------------------------------\n"); \
+        printf("TOTAL: %zu tests\n", passed_count + failed_count);                                       \
+        printf("PASSED: %zu\n", passed_count);                                                           \
+        printf("FAILED: %zu\n", failed_count);                                                           \
+        printf("---------------------------------------------------------------------------------\n\n"); \
+    } while(0)
 
-void nctest_run_all()
+#define PRINT_SINGLE_TEST_RES(t)                                        \
+    do {                                                                \
+        if (t->failed) {                                                 \
+            printf("[FAIL] %s\n", t->test_name);                        \
+            printf("        %s\n", t->fail_msg);                        \
+            printf("        at %s:%d\n", t->fail_file, t->fail_line);   \
+        } else {                                                        \
+            printf("[PASS] %s\n", t->test_name);                        \
+        }                                                               \
+    } while(0)
+
+void nctest_run_all(bool verbose)
 {
+    printf("Running tests...\n");
+
+    size_t passed_count = 0;
+    size_t failed_count = 0;
+
     for (NT_Test* t = &__start_test_registry; t < &__stop_test_registry; t++)
     {
         _nctest_curr_test_state = (NT_TestState) {.test_name = t->name };
@@ -31,14 +51,15 @@ void nctest_run_all()
         t->fn();
 
         if (_nctest_curr_test_state.failed) {
-            ++g_test_stat.failed_count;
+            ++failed_count;
         } else {
-            ++g_test_stat.passed_count;
+            ++passed_count;
+        }
+
+        if (verbose) {
+            PRINT_SINGLE_TEST_RES((&_nctest_curr_test_state));
         }
     }
 
-    printf("TEST RESULTS\n");
-    printf("Tests run: %zu\n", g_test_stat.passed_count + g_test_stat.failed_count);
-    printf("Tests passed: %zu\n", g_test_stat.passed_count);
-    printf("Tests failed: %zu\n\n", g_test_stat.failed_count);
+    PRINT_TEST_STAT(passed_count, failed_count);
 }

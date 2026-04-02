@@ -23,7 +23,6 @@ all: run-example-user-tests
 
 run-example-user-tests: CFLAGS += $(RELEASE_FLAGS)
 run-example-user-tests: $(TARGET)
-	@$(TARGET)
 
 clean:
 	rm -rf $(BUILDDIR)
