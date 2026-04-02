@@ -14,6 +14,9 @@ NT_TestState _nctest_curr_test_state = {
     .failed = false // will be set to false by asserts in case they fail
 };
 
+#define PASS_COLORED_TEXT "\033[38;5;47mPASS\033[m"
+#define FAIL_COLORED_TEXT "\033[38;5;197mFAIL\033[m"
+
 #define PRINT_TEST_STAT(passed_count, failed_count)                                                      \
     do {                                                                                                 \
         printf("\n---------------------------------------------------------------------------------\n"); \
@@ -25,12 +28,12 @@ NT_TestState _nctest_curr_test_state = {
 
 #define PRINT_SINGLE_TEST_RES(t)                                        \
     do {                                                                \
-        if (t->failed) {                                                 \
-            printf("[FAIL] %s\n", t->test_name);                        \
+        if (t->failed) {                                                \
+            printf("["FAIL_COLORED_TEXT"] %s\n", t->test_name);         \
             printf("        %s\n", t->fail_msg);                        \
             printf("        at %s:%d\n", t->fail_file, t->fail_line);   \
         } else {                                                        \
-            printf("[PASS] %s\n", t->test_name);                        \
+            printf("["PASS_COLORED_TEXT"] %s\n", t->test_name);         \
         }                                                               \
     } while(0)
 
